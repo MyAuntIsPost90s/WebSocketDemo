@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<input type="text" id="msg" />
+<button onclick="send()">提交</button>
+<script src="jquery.min.js"></script>
+<script type="text/javascript">
+var MyWebSocket = function (){
+	var websocket;
+	if ('WebSocket' in window) {
+	    websocket = new WebSocket("ws://localhost:8081/WebSocketDemo/servers?loginKey=sss");
+	} else if ('MozWebSocket' in window) {
+        websocket = new MozWebSocket("ws://localhost:8081/WebSocketDemo/servers");
+    }else {
+	    return
+	}
+	websocket.onopen = function (event) {
+		websocket.send("这是我发送的方法");//这个内容会发送到 SystemWebSocketHandler类的 handleMessage方法中
+	};
+	websocket.onmessage = function (event) {
+		alert(event.data);
+	};
+	websocket.onerror = function (event) {
+	};
+	websocket.onclose = function (event) {
+		alert("您已被踢下线");
+	};
+	return websocket;
+}
+
+var ws = new MyWebSocket();
+
+function send(){
+	ws.send($('#msg').val());
+}
+</script>
+</body>
+</html>
